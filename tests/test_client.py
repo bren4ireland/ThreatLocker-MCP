@@ -17,7 +17,7 @@ from threatlocker_mcp.config import Config  # noqa: E402
 @pytest.fixture
 def config() -> Config:
     return Config(
-        api_key="test-key",
+        api_key=os.environ["THREATLOCKER_API_KEY"],
         default_org_id="default-org",
         base_url="https://api.example.test",
         timeout=5.0,

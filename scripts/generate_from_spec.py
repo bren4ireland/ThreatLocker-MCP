@@ -19,6 +19,7 @@ from __future__ import annotations
 
 import json
 import keyword
+import os
 import re
 import sys
 from collections import defaultdict
@@ -911,8 +912,14 @@ def main() -> int:
         print("usage: generate_from_spec.py <spec.json>", file=sys.stderr)
         return 2
 
-    spec_path = Path(sys.argv[1])
-    spec = json.loads(spec_path.read_text(encoding="utf-8"))
+    raw_arg = sys.argv[1]
+    resolved = os.path.realpath(raw_arg)
+    if not os.path.isfile(resolved):
+        print(f"error: {raw_arg!r} is not a file", file=sys.stderr)
+        return 2
+    with open(resolved, encoding="utf-8") as fh:
+        spec = json.load(fh)
+    spec_path = Path(resolved)
 
     # Walk chosen ops to find which schemas we need
     schema_seed: list[str] = []
