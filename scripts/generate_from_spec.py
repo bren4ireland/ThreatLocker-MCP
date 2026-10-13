@@ -257,6 +257,10 @@ HEADER_PARAM_DEFAULTS: dict[tuple[str, str], dict[str, str]] = {
     },
 }
 
+# Hand-written tools that extend generated endpoint wrappers. Keep these modules
+# when regenerating endpoint tools and include them in the generated registry.
+CUSTOM_TOOL_MODULES = ["denied_activity"]
+
 
 # Per-property field overrides for generated Pydantic models. Use when the spec
 # default doesn't match what the server actually requires -- for example, when a
@@ -954,7 +958,7 @@ def main() -> int:
     # Clear out old tool modules (everything but __init__.py). Log each unlink so
     # a developer who dropped a hand-edited file in tools/ sees it disappear.
     for f in tools_dir.glob("*.py"):
-        if f.name != "__init__.py":
+        if f.name not in {"__init__.py", *(f"{name}.py" for name in CUSTOM_TOOL_MODULES)}:
             print(f"Removing stale tool module {f.name}", file=sys.stderr)
             f.unlink()
 
@@ -967,7 +971,7 @@ def main() -> int:
         print(f"Wrote tools/{module_name}.py ({len(ops)} tools)", file=sys.stderr)
 
     # Write tools/__init__.py
-    mod_names = [mod for _tag, mod in tag_modules]
+    mod_names = [mod for _tag, mod in tag_modules] + CUSTOM_TOOL_MODULES
     init_lines = [
         '"""Generated tool registry."""',
         "from fastmcp import FastMCP",

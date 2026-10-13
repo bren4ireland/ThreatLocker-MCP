@@ -8,6 +8,7 @@ from . import (
     approval_request,
     computer,
     computer_group,
+    denied_activity,
     maintenance_mode,
     online_devices,
     organization,
@@ -24,6 +25,7 @@ def register_all(mcp: FastMCP) -> None:
     approval_request.register(mcp)
     computer.register(mcp)
     computer_group.register(mcp)
+    denied_activity.register(mcp)
     maintenance_mode.register(mcp)
     online_devices.register(mcp)
     organization.register(mcp)
