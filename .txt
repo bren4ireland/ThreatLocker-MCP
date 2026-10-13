@@ -1,0 +1,1 @@
+threatlocker-mcp --transport http --port 8765
